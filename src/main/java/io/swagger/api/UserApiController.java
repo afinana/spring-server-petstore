@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
-
 @Controller
 public class UserApiController implements UserApi {
 
