@@ -13,21 +13,19 @@ import java.util.List;
  * Pet
  */
 @Data
-@Builder
 @Document("pet")
 public class Pet   {
 
+  public Pet(){
+    super();
+  }
+
   @Id
   private Long id = null;
-
   private Category category = null;
-
   private String name = null;
-
   private List<String> photoUrls = new ArrayList<String>();
-
   private List<Tag> tags = null;
-
   private PetStatusEnum status = null;
 
 }

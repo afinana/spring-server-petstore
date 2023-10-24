@@ -5,9 +5,7 @@ import net.petstore.model.User;
 import java.util.List;
 
 public interface UserService {
-
-
-    public User createUser(User body) ;
+    public void createUser(User body) ;
 
     public void createUsersWithArrayInput(List<User> body) ;
 

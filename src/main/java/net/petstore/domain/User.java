@@ -12,6 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("user")
 public class User   {
 
+  public User(){
+    super();
+  }
   @Id
   private Long id = null;
   private String username = null;

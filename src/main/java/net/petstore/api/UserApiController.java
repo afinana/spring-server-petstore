@@ -1,6 +1,7 @@
 package net.petstore.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.petstore.model.User;
 import io.swagger.annotations.ApiParam;
 import net.petstore.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,10 +22,10 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
-@Controller
+@RestController
+@Slf4j
 public class UserApiController implements UserApi {
 
-    private static final Logger log = LoggerFactory.getLogger(UserApiController.class);
 
     private final ObjectMapper objectMapper;
 

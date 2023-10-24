@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -36,16 +35,14 @@ public class SwaggerDocumentationConfig {
     @Bean
     public Docket customImplementation(){
         return new Docket(DocumentationType.SWAGGER_2)
-
                 .select()
-                    .apis(RequestHandlerSelectors.any())
-                    .paths(PathSelectors.any())
-                    .apis(RequestHandlerSelectors.basePackage("net.petstore.api"))
-                    .build()
+                .apis(RequestHandlerSelectors.basePackage("net.petstore.api"))
+                .build()
                 .directModelSubstitute(LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(OffsetDateTime.class, java.util.Date.class)
                 .apiInfo(apiInfo());
     }
+
 
 
     @Bean

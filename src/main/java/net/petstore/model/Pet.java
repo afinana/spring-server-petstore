@@ -18,6 +18,11 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class Pet   {
+
+  public Pet(){
+    super();
+  }
+
   @ApiModelProperty(value = "0L")
   @JsonProperty("id")
   private Long id = null;

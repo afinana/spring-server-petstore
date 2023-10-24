@@ -14,6 +14,11 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class MapInventory   {
+
+  public MapInventory(){
+    super();
+  }
+
   @JsonProperty("name")
   @ApiModelProperty(value = "name")
   private String name = null;

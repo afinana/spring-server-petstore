@@ -35,7 +35,7 @@ public class PetServiceImpl implements PetService {
 
 
     public void deletePet( Long petId ) {
-        petRepository.deleteById(Long.toString(petId));
+        petRepository.deleteById(petId);
 
     }
 
@@ -45,7 +45,7 @@ public class PetServiceImpl implements PetService {
 
     public Pet getPetById(Long petId) {
 
-        Optional<net.petstore.domain.Pet> pet = petRepository.findById(Long.toString(petId));
+        Optional<net.petstore.domain.Pet> pet = petRepository.findById(petId);
         Pet result = null;
         if (pet.isPresent()) {
             result = convertToDTO(pet.get());
@@ -55,7 +55,6 @@ public class PetServiceImpl implements PetService {
     }
 
     public void updatePet(Pet petDto) {
-
 
         net.petstore.domain.Pet pet = convertToEntity(petDto);
         petRepository.save(pet);
@@ -74,12 +73,14 @@ public class PetServiceImpl implements PetService {
 
     private net.petstore.domain.Pet convertToEntity(Pet petDto) {
 
-        return modelMapper.map(petDto, net.petstore.domain.Pet.class);
+       return modelMapper.map(petDto, net.petstore.domain.Pet.class);
+
 
     }
     private Pet convertToDTO(net.petstore.domain.Pet petEntity) {
 
         return modelMapper.map(petEntity, Pet.class);
+
     }
 
 

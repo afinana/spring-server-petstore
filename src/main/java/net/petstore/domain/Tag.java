@@ -9,13 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Tag
  */
 @Data
-@Builder
 @Document("tag")
 public class Tag   {
 
+  public Tag(){
+    super();
+  }
+
   @Id
   private Long id = null;
-
   private String name = null;
 
 }

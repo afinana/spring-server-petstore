@@ -14,6 +14,12 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class Tag   {
+
+  public Tag(){
+    super();
+  }
+
+
   @JsonProperty("id")
   @ApiModelProperty(value = "0L")
   private Long id = null;

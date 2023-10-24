@@ -10,14 +10,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * MapInventory
  */
 @Data
-@Builder
 @Document("mapinventory")
 public class MapInventory   {
+
+  public MapInventory(){
+    super();
+  }
+
   @Id
   private String name = null;
-
   private Long value = null;
-
 
 }
 

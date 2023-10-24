@@ -16,7 +16,11 @@ import java.util.Objects;
 @Data
 public class Order   {
 
-  @JsonProperty("id")
+    public Order(){
+        super();
+    }
+
+    @JsonProperty("id")
   @ApiModelProperty(value = "0L")
   private Long id = null;
 

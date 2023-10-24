@@ -10,9 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Category
  */
 @Data
-@Builder
 @Document("category")
 public class Category   {
+  public Category(){
+    super();
+  }
 
   @Id
   private Long id = null;
