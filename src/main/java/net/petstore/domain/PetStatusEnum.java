@@ -22,7 +22,7 @@ public enum PetStatusEnum {
     @Override
     @JsonValue
     public String toString() {
-        return String.valueOf(value);
+        return value;
     }
 
     @JsonCreator

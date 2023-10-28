@@ -14,6 +14,8 @@ public interface PetService {
 
     List<Pet> findPetsByStatus(List<String> status);
 
+    List<Pet> findPetsByTags(List<String> tags);
+
 
     Pet getPetById(Long petId);
 

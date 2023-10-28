@@ -113,8 +113,19 @@
         public ResponseEntity<List<Pet>> findPetsByStatus(@NotNull @ApiParam(value = "Status values that need to be considered for filter", required = true, allowableValues = "available, pending, sold") @Valid @RequestParam(value = "status", required = true) List<String> status){
 
 
-            return new ResponseEntity<List<Pet>>(HttpStatus.NOT_IMPLEMENTED);
+            try{
+
+                log.info("findPetsByStatus status={}",status);
+
+                List<Pet> result = petService.findPetsByStatus(status);
+                return new ResponseEntity<List<Pet>>(result, HttpStatus.OK);
+
+            } catch (Exception e) {
+                log.error("Couldn't serialize response for content type application/json", e);
+                return new ResponseEntity<List<Pet>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+
 
 
 
@@ -123,7 +134,16 @@
                 method = RequestMethod.GET)
         public ResponseEntity<List<Pet>> findPetsByTags(@NotNull @ApiParam(value = "Tags to filter by", required = true) @Valid @RequestParam(value = "tags", required = true) List<String> tags){
 
-            return new ResponseEntity<List<Pet>>(HttpStatus.NOT_IMPLEMENTED);
+            try{
+                log.info("findPetsByTags tags={}", tags);
+                List<Pet> result = petService.findPetsByTags(tags);
+
+                return new ResponseEntity<List<Pet>>(result, HttpStatus.OK);
+
+            } catch (Exception e) {
+                log.error("Couldn't serialize response for content type application/json", e);
+                return new ResponseEntity<List<Pet>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
 
