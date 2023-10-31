@@ -3,7 +3,6 @@ package net.petstore.service;
 
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
-import net.petstore.model.PetStatusEnum;
 import net.petstore.repository.PetRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -47,7 +45,7 @@ public class PetServiceImpl implements PetService {
         List<Pet> petArrayList = new ArrayList<>();
         for (String  myTag: tags) {
             // Query mongodb
-            List<net.petstore.domain.Pet> domainPets = petRepository.findWithTags(myTag);
+            List<net.petstore.domain.Pet> domainPets = petRepository.findByTags(myTag);
 
             // Convert domain query result to DTO list
             for (net.petstore.domain.Pet domainPet : domainPets) {
@@ -64,7 +62,7 @@ public class PetServiceImpl implements PetService {
 
             net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum.fromValue(statusCode);
             // Query mongodb
-            List<net.petstore.domain.Pet> domainPets = petRepository.findPetByStatus(statusEnum);
+            List<net.petstore.domain.Pet> domainPets = petRepository.findByStatus(statusEnum);
             for (net.petstore.domain.Pet domainPet: domainPets){
                 // Convert domain query result to DTO list
                 petArrayList.add(convertToDTO(domainPet));

@@ -1,15 +1,15 @@
 package net.petstore.domain;
 
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.redis.core.RedisHash;
+
 
 /**
  * Tag
  */
 @Data
-@Document("tag")
+@RedisHash("tag")
 public class Tag   {
 
   public Tag(){
