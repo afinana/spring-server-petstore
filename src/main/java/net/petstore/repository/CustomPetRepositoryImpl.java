@@ -12,17 +12,12 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class  CustomItemRepositoryImpl implements CustomItemRepository {
+public class  CustomPetRepositoryImpl implements CustomPetRepository {
 
     @Autowired
     RedisTemplate redisTemplate;
 
 
-
-    public List<Pet> findPetByName(String name) {
-
-        return null;
-    }
 
     public List<Pet> findCustomPetByTag(String tag) {
 
