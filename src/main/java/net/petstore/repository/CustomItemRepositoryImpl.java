@@ -1,12 +1,10 @@
 package net.petstore.repository;
 
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.result.UpdateResult;
-import net.petstore.model.Pet;
 import lombok.extern.slf4j.Slf4j;
+import net.petstore.model.Pet;
 import net.petstore.model.PetStatusEnum;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,9 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Arrays.asList;
-import static javax.management.Query.eq;
 
 
 @Component

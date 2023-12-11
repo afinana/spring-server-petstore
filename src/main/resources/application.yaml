@@ -1,0 +1,27 @@
+server:
+  contextPath: /v2
+  port: 8080
+
+spring:
+  application:
+    name: petstore
+  security:
+      ignored: "/actuator/**"
+  data:
+    mongodb:
+      authentication-database: admin
+      database: petstore
+      uri: mongodb://root:example@localhost:27017/admin?retryWrites=true&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256
+  jackson:
+    date-format: net.petstore.RFC3339DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+springfox:
+  documentation:
+    auto-startup: true
+    swagger:
+      v2:
+        path: /api-docs

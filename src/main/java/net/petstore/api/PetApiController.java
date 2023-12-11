@@ -5,13 +5,11 @@
     import lombok.extern.slf4j.Slf4j;
     import net.petstore.model.ModelApiResponse;
     import net.petstore.model.Pet;
+    import net.petstore.security.annotation.AllowedRoles;
     import net.petstore.service.PetService;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
-    import org.springframework.stereotype.Controller;
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +43,7 @@
                 produces = { "application/json", "application/xml" },
                 consumes = { "application/json", "application/xml" },
                 method = RequestMethod.POST)
+        @AllowedRoles("ADMIN")
         public ResponseEntity<Void> addPet(@ApiParam(value = "Pet object that needs to be added to the store" ,required=true )  @Valid @RequestBody Pet body) {
 
             log.info("addPet body={}", body);
@@ -57,6 +56,7 @@
         @RequestMapping(value = "/pet/{petId}",
                 produces = { "application/json", "application/xml" },
                 method = RequestMethod.DELETE)
+        @AllowedRoles("ADMIN")
         public ResponseEntity<Void> deletePet(@ApiParam(value = "Pet id to delete",required=true, example = "123") @PathVariable("petId") Long petId,@ApiParam(value = "Api Key") @RequestHeader(value="api_key", required=false) String apiKey){
 
 
@@ -69,6 +69,7 @@
         @RequestMapping(value = "/pet/{petId}",
                 produces = { "application/json", "application/xml" },
                 method = RequestMethod.GET)
+        @AllowedRoles("VISITOR")
        public ResponseEntity<Pet> getPetById(@ApiParam(value = "ID of pet to return",required=true, example = "123") @PathVariable("petId") Long petId) {
 
 
@@ -94,6 +95,7 @@
                 produces = { "application/json", "application/xml" },
                 consumes = { "application/json", "application/xml" },
                 method = RequestMethod.PUT)
+        @AllowedRoles("ADMIN")
         public ResponseEntity<Void> updatePet(@ApiParam(value = "Pet object that needs to be added to the store" ,required=true )  @Valid @RequestBody Pet body){
             try{
 
@@ -110,6 +112,7 @@
         @RequestMapping(value = "/pet/findByStatus",
                 produces = { "application/json", "application/xml" },
                 method = RequestMethod.GET)
+        @AllowedRoles("VISITOR")
         public ResponseEntity<List<Pet>> findPetsByStatus(@NotNull @ApiParam(value = "Status values that need to be considered for filter", required = true, allowableValues = "available, pending, sold") @Valid @RequestParam(value = "status", required = true) List<String> status){
 
 
@@ -132,6 +135,7 @@
         @RequestMapping(value = "/pet/findByTags",
                 produces = { "application/json", "application/xml" },
                 method = RequestMethod.GET)
+        @AllowedRoles("VISITOR")
         public ResponseEntity<List<Pet>> findPetsByTags(@NotNull @ApiParam(value = "Tags to filter by", required = true) @Valid @RequestParam(value = "tags", required = true) List<String> tags){
 
             try{
@@ -151,6 +155,7 @@
                 produces = { "application/json", "application/xml" },
                 consumes = { "application/x-www-form-urlencoded" },
                 method = RequestMethod.POST)
+        @AllowedRoles("ADMIN")
         public ResponseEntity<Void> updatePetWithForm(@ApiParam(value = "ID of pet that needs to be updated",required=true, example = "123") @PathVariable("petId") Long petId,
                                                @ApiParam(value = "Updated name of the pet") @RequestParam(value="name", required=false)  String name,
                                                @ApiParam(value = "Updated status of the pet") @RequestParam(value="status", required=false)  String status) {
@@ -174,6 +179,7 @@
                 produces = { "application/json" },
                 consumes = { "multipart/form-data" },
                 method = RequestMethod.POST)
+        @AllowedRoles("ADMIN")
         public ResponseEntity<ModelApiResponse> uploadFile(@ApiParam(value = "ID of pet to update",required=true, example = "123") @PathVariable("petId") Long petId,
                                                     @ApiParam(value = "Additional data to pass to server") @RequestParam(value="additionalMetadata", required=false)  String additionalMetadata,
                                                     @ApiParam(value = "file to upload") @Valid @RequestPart(value="file", required=false) MultipartFile file){

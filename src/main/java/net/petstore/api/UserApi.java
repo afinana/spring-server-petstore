@@ -5,8 +5,8 @@
  */
 package net.petstore.api;
 
-import net.petstore.model.User;
 import io.swagger.annotations.*;
+import net.petstore.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

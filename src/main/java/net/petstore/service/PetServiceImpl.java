@@ -3,7 +3,6 @@ package net.petstore.service;
 
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
-import net.petstore.model.PetStatusEnum;
 import net.petstore.repository.PetRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
