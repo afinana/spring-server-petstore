@@ -23,6 +23,7 @@ public class  CustomItemRepositoryImpl implements CustomItemRepository {
     @Autowired
     MongoTemplate mongoTemplate;
 
+    @Override
     public void updatePetQuantity(String name, PetStatusEnum status) {
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(name));
@@ -39,6 +40,7 @@ public class  CustomItemRepositoryImpl implements CustomItemRepository {
 
     }
 
+    @Override
     public List<Pet> findPetByName(String name) {
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(name));
@@ -47,6 +49,7 @@ public class  CustomItemRepositoryImpl implements CustomItemRepository {
 
     }
 
+    @Override
     public List<Pet> findCustomPetByTag(String tag) {
 
         ArrayList<String> tagsArray = new ArrayList<>();
