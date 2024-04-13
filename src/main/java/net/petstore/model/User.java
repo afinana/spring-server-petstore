@@ -25,7 +25,7 @@ public class User   {
 
   @JsonProperty("username")
   @ApiModelProperty(value = "name")
-  private String username = null;
+  private String userName = null;
 
   @JsonProperty("firstName")
   @ApiModelProperty(value = "firstName")
@@ -55,7 +55,7 @@ public class User   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, firstName, lastName, email, password, phone, userStatus);
+    return Objects.hash(id, userName, firstName, lastName, email, password, phone, userStatus);
   }
 
 }
