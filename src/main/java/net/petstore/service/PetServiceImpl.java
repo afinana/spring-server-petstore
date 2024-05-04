@@ -1,12 +1,12 @@
 package net.petstore.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
+import net.petstore.repository.CustomPetRepository;
 import net.petstore.repository.PetRepository;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,15 +16,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PetServiceImpl implements PetService {
 
     @Autowired
     PetRepository petRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    CustomPetRepository customPetRepository;
 
-    private static final Logger log = LoggerFactory.getLogger(net.petstore.api.PetApiController.class);
+    @Autowired
+    ModelMapper modelMapper;
+
 
     public void addPet(Pet petDTO) {
 
@@ -43,9 +46,11 @@ public class PetServiceImpl implements PetService {
 
 
         List<Pet> petArrayList = new ArrayList<>();
+
         for (String myTag : tags) {
             // Query mongodb
-            List<net.petstore.domain.Pet> domainPets = petRepository.findByTags(myTag);
+           // List<net.petstore.domain.Pet> domainPets = customPetRepository.findCustomPetByTag(myTag);
+            List<net.petstore.domain.Pet> domainPets = petRepository.findByTags_Name(myTag);
 
             // Convert domain query result to DTO list
             for (net.petstore.domain.Pet domainPet : domainPets) {
@@ -72,7 +77,7 @@ public class PetServiceImpl implements PetService {
 
                 // Convert domain query result to DTO list
                 petArrayList.add(convertToDTO(domainPet));
-            };
+            }
         }
         return petArrayList;
     }

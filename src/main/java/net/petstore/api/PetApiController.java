@@ -19,7 +19,6 @@
 
     @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
     @RestController
-    @RequestMapping(value = "/v2")
     @Slf4j
     public class PetApiController implements PetApi {
 
