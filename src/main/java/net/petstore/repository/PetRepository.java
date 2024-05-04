@@ -14,5 +14,5 @@ public  interface PetRepository extends CrudRepository<Pet, Long> {
 
     List<Pet> findByStatus(PetStatusEnum statusEnum);
 
-    List<Pet> findByTags(String myTag);
+    List<Pet> findByTags_Name(String myTag);
 }

@@ -23,10 +23,11 @@ public class Pet   {
   @Id
   private Long id = null;
   private Category category = null;
-  private String name = null;
-  private List<String> photoUrls = new ArrayList<String>();
 
   @Indexed
+  private String name = null;
+
+  private List<String> photoUrls = new ArrayList<String>();
   private List<Tag> tags = null;
 
   @Indexed
