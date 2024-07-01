@@ -23,11 +23,12 @@ public class  CustomPetRepositoryImpl implements CustomPetRepository {
     private RedisTemplate<Object, Object> redisTemplate;
 
 
-    public List<Pet> findCustomPetByTag(String tagName) {
+    @Override
+    public List<Pet> findCustomPetByTag(String tag) {
 
         // search pets by tags Name using redisTemplate
         List<Pet> petList = new ArrayList<>();
-        String key="pet:tags.name:"+tagName;
+        String key="pet:tags.name:"+tag;
 
         // get all pet ids by tag name using redisTemplate
         Set<Object> ids = redisTemplate.opsForSet().members(key);
@@ -67,5 +68,6 @@ public class  CustomPetRepositoryImpl implements CustomPetRepository {
         return petList;
 
     }
+
 
 }
