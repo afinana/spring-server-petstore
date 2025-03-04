@@ -2,6 +2,7 @@
 
     import com.fasterxml.jackson.databind.ObjectMapper;
     import io.swagger.annotations.*;
+    import jakarta.servlet.http.HttpServletRequest;
     import lombok.extern.slf4j.Slf4j;
     import net.petstore.model.ModelApiResponse;
     import net.petstore.model.Pet;
@@ -12,14 +13,13 @@
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
 
-    import javax.servlet.http.HttpServletRequest;
-    import javax.validation.Valid;
-    import javax.validation.constraints.NotNull;
+
+    import jakarta.validation.Valid;
+    import jakarta.validation.constraints.NotNull;
     import java.util.List;
 
-    @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+    @jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
     @RestController
-    @RequestMapping(value = "/v2")
     @Slf4j
     public class PetApiController implements PetApi {
 
