@@ -51,23 +51,8 @@ public class  CustomPetRepositoryImpl implements CustomPetRepository {
             petList.add(pet);
         }
 
-
-
-        /*
-        List<Object> pets = redisTemplate.opsForValue().multiGet(idList);
-        // convert pets to Pet object
-        if (pets == null) {
-            return petList;
-        }
-        for (Object petMap : pets) {
-            Pet pet = new ObjectMapper().convertValue(petMap, Pet.class);
-            petList.add(pet);
-        }
-        */
-        log.info("pets found by tag name: {}", petList);
+        log.info("petList: {}", petList);
         return petList;
 
     }
-
-
 }

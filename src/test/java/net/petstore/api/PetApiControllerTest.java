@@ -1,22 +1,25 @@
 package net.petstore.api;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
+import net.petstore.model.ModelApiResponse;
+import net.petstore.model.Pet;
+import net.petstore.service.PetService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import net.petstore.api.PetApi;
-import net.petstore.model.ModelApiResponse;
-import net.petstore.model.Pet;
-import net.petstore.service.PetService;
-import org.springframework.web.multipart.MultipartFile;
-
+@ExtendWith(MockitoExtension.class)
 public class PetApiControllerTest {
 
     @Mock

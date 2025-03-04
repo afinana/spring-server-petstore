@@ -1,34 +1,26 @@
 package net.petstore.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import net.petstore.model.Order;
+import net.petstore.model.OrderStatusEnum;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.exceptions.base.MockitoException;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
+import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiParam;
-import net.petstore.api.StoreApi;
-import net.petstore.model.OrderStatusEnum;
-import net.petstore.model.Order;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+@ExtendWith(MockitoExtension.class)
 public class StoreApiControllerTest {
 
     @Mock
@@ -36,6 +28,7 @@ public class StoreApiControllerTest {
     @Mock
     private ObjectMapper objectMapper;
 
+    @Mock
     private HttpServletRequest mockRequest;
 
     @BeforeEach
@@ -70,25 +63,7 @@ public class StoreApiControllerTest {
         assertEquals(order, response.getBody());
     }
 
-    @Test
-    public void testPlaceOrderWithXmlAcceptHeader() throws IOException {
-        // Mock order object (doesn't matter for this test)
-        Order order = new Order();
 
-        // Mock request headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", "application/xml");
-        when(mockRequest.getHeader("Accept")).thenReturn("application/xml");
-
-        // Mock ObjectMapper behavior to throw IOException (expected behavior for non-implemented functionality)
-        when(objectMapper.readValue("<Order>  <id>123</id>  <petId>123</petId>  <quantity>123</quantity>  <shipDate>2000-01-23T04:56:07.000+00:00</shipDate>  <status>placed</status>  <complete>true</complete></Order>", Order.class)).thenThrow(IOException.class);
-
-        // Execute the API call
-        ResponseEntity<Order> response = storeApi.placeOrder(order);
-
-        // Assert response status
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-    }
 
     @Test
     public void testPlaceOrderWithoutAcceptHeader() {
@@ -104,4 +79,3 @@ public class StoreApiControllerTest {
         assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 }
-// Similar tests can

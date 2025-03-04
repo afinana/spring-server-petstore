@@ -3,7 +3,7 @@ package net.petstore.api;
 
 import lombok.Data;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class ApiResponseMessage {
     public static final int ERROR = 1;
