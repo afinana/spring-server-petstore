@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.RedisHash;
 /**
  * Category
  */
-
 @RedisHash("category")
 @Data
 public class Category   {

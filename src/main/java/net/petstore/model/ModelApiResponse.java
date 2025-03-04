@@ -11,7 +11,7 @@ import java.util.Objects;
  * ModelApiResponse
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class ModelApiResponse   {
 
@@ -31,10 +31,6 @@ public class ModelApiResponse   {
   @ApiModelProperty(value = "message")
   private String message = null;
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(code, type, message);
-  }
 
 }
 

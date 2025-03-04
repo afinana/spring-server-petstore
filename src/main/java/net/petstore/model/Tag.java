@@ -11,7 +11,7 @@ import java.util.Objects;
  * Tag
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class Tag   {
 
@@ -28,10 +28,7 @@ public class Tag   {
   @ApiModelProperty(value = "name" )
   private String name = null;
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name);
-  }
+
 
 }
 

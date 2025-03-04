@@ -29,6 +29,7 @@ public class PetServiceImpl implements PetService {
     ModelMapper modelMapper;
 
 
+    @Override
     public void addPet(Pet petDTO) {
 
         net.petstore.domain.Pet pet = convertToEntity(petDTO);
@@ -36,12 +37,13 @@ public class PetServiceImpl implements PetService {
 
     }
 
-
+    @Override
     public void deletePet(Long petId) {
         petRepository.deleteById(petId);
 
     }
 
+    @Override
     public List<Pet> findPetsByTags(List<String> tags) {
 
 
@@ -60,6 +62,7 @@ public class PetServiceImpl implements PetService {
         return petArrayList;
     }
 
+    @Override
     public List<Pet> findPetsByStatus(List<String> statusList) {
 
         ArrayList<Pet> petArrayList = new ArrayList<>();
@@ -82,6 +85,7 @@ public class PetServiceImpl implements PetService {
         return petArrayList;
     }
 
+    @Override
     public Pet getPetById(Long petId) {
 
         Optional<net.petstore.domain.Pet> pet = petRepository.findById(petId);
@@ -93,12 +97,14 @@ public class PetServiceImpl implements PetService {
 
     }
 
+    @Override
     public void updatePet(Pet petDto) {
 
         net.petstore.domain.Pet pet = convertToEntity(petDto);
         petRepository.save(pet);
     }
 
+    @Override
     public void updatePetWithForm(Long petId,
                                   String name,
                                   String status) {
@@ -106,9 +112,11 @@ public class PetServiceImpl implements PetService {
 
     }
 
+    @Override
     public ModelApiResponse uploadFile(Long petId, String additionalMetadata, MultipartFile file) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
+
 
     private net.petstore.domain.Pet convertToEntity(Pet petDto) {
 
@@ -116,6 +124,7 @@ public class PetServiceImpl implements PetService {
 
 
     }
+
 
     private Pet convertToDTO(net.petstore.domain.Pet petEntity) {
 

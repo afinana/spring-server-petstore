@@ -11,7 +11,7 @@ import java.util.Objects;
  * Category
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class Category   {
 
@@ -27,10 +27,6 @@ public class Category   {
   @ApiModelProperty(value = "Name")
   private String name = null;
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name);
-  }
 
 }
 
