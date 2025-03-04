@@ -3,13 +3,13 @@ package net.petstore.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * User
  */
 @Data
-@RedisHash("user")
+@Document("user")
 public class User   {
 
   public User(){
