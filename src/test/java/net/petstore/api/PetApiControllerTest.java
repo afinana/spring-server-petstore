@@ -65,13 +65,13 @@ public class PetApiControllerTest {
         when(petService.getPetById(petId)).thenReturn(null);
 
         ResponseEntity<Pet> response = petApiController.getPetById(petId);
-
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void testUpdatePet() {
         Pet pet = new Pet();
+
         petApiController.updatePet(pet);
         verify(petService).updatePet(pet);
     }
@@ -80,6 +80,7 @@ public class PetApiControllerTest {
     public void testFindPetsByStatus() {
         List<String> status = new ArrayList<>();
         status.add("available");
+
         petApiController.findPetsByStatus(status);
         verify(petService).findPetsByStatus(status);
     }
@@ -88,6 +89,7 @@ public class PetApiControllerTest {
     public void testFindPetsByTags() {
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
+
         petApiController.findPetsByTags(tags);
         verify(petService).findPetsByTags(tags);
     }
@@ -99,7 +101,6 @@ public class PetApiControllerTest {
         String status = "sold";
 
         ResponseEntity<Void> response = petApiController.updatePetWithForm(petId, name, status);
-
         assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 
@@ -110,7 +111,6 @@ public class PetApiControllerTest {
         MultipartFile file = null;
 
         ResponseEntity<ModelApiResponse> response = petApiController.uploadFile(petId, additionalMetadata, file);
-
         assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 }

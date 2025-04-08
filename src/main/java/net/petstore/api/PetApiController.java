@@ -73,7 +73,6 @@
 
                 log.info("getPetById id={}", petId);
                 Pet pet = petService.getPetById(petId);
-                log.info("getPetById result={}", pet);
                 if (pet==null){
                     return new ResponseEntity<Pet>(HttpStatus.NOT_FOUND);
                 }
@@ -113,7 +112,6 @@
             try{
 
                 log.info("findPetsByStatus status={}",status);
-
                 List<Pet> result = petService.findPetsByStatus(status);
                 return new ResponseEntity<List<Pet>>(result, HttpStatus.OK);
 
@@ -134,7 +132,6 @@
             try{
                 log.info("findPetsByTags tags={}", tags);
                 List<Pet> result = petService.findPetsByTags(tags);
-
                 return new ResponseEntity<List<Pet>>(result, HttpStatus.OK);
 
             } catch (Exception e) {
