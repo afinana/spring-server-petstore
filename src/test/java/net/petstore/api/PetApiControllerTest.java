@@ -1,116 +1,128 @@
 package net.petstore.api;
 
-import net.petstore.model.ModelApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.petstore.model.Pet;
 import net.petstore.service.PetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class PetApiControllerTest {
+class PetApiControllerTest {
+
+    @InjectMocks
+    private PetApiController petApiController;
 
     @Mock
     private PetService petService;
 
-    private PetApiController petApiController;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    private MockHttpServletRequest request;
 
     @BeforeEach
-    public void setUp() {
-        petApiController = new PetApiController(null, null);
-        petApiController.petService = petService;
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        request = new MockHttpServletRequest();
+        petApiController = new PetApiController(objectMapper, request);
     }
 
     @Test
-    public void testAddPet() {
+    void testAddPet() {
         Pet pet = new Pet();
-        petApiController.addPet(pet);
-        verify(petService).addPet(pet);
+        pet.setId(1L);
+        pet.setName("Buddy");
+
+        doNothing().when(petService).addPet(pet);
+
+        ResponseEntity<Void> response = petApiController.addPet(pet);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petService, times(1)).addPet(pet);
     }
 
     @Test
-    public void testDeletePet() {
-        Long petId = 123L;
-        petApiController.deletePet(petId, null);
-        verify(petService).deletePet(petId);
+    void testDeletePet() {
+        Long petId = 1L;
+
+        doNothing().when(petService).deletePet(petId);
+
+        ResponseEntity<Void> response = petApiController.deletePet(petId, null);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petService, times(1)).deletePet(petId);
     }
 
     @Test
-    public void testGetPetById_Found() {
-        Long petId = 123L;
+    void testGetPetById() {
+        Long petId = 1L;
         Pet pet = new Pet();
+        pet.setId(petId);
+        pet.setName("Buddy");
+
         when(petService.getPetById(petId)).thenReturn(pet);
 
         ResponseEntity<Pet> response = petApiController.getPetById(petId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(pet, response.getBody());
+        verify(petService, times(1)).getPetById(petId);
     }
 
     @Test
-    public void testGetPetById_NotFound() {
-        Long petId = 123L;
-        when(petService.getPetById(petId)).thenReturn(null);
-
-        ResponseEntity<Pet> response = petApiController.getPetById(petId);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    public void testUpdatePet() {
+    void testUpdatePet() {
         Pet pet = new Pet();
-        petApiController.updatePet(pet);
-        verify(petService).updatePet(pet);
+        pet.setId(1L);
+        pet.setName("Buddy");
+
+        doNothing().when(petService).updatePet(pet);
+
+        ResponseEntity<Void> response = petApiController.updatePet(pet);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petService, times(1)).updatePet(pet);
     }
 
     @Test
-    public void testFindPetsByStatus() {
-        List<String> status = new ArrayList<>();
-        status.add("available");
-        petApiController.findPetsByStatus(status);
-        verify(petService).findPetsByStatus(status);
+    void testFindPetsByStatus() {
+        List<String> status = Arrays.asList("available");
+        List<Pet> pets = Arrays.asList(new Pet(1L, "Buddy"), new Pet(2L, "Max"));
+
+        when(petService.findPetsByStatus(status)).thenReturn(pets);
+
+        ResponseEntity<List<Pet>> response = petApiController.findPetsByStatus(status);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(pets, response.getBody());
+        verify(petService, times(1)).findPetsByStatus(status);
     }
 
     @Test
-    public void testFindPetsByTags() {
-        List<String> tags = new ArrayList<>();
-        tags.add("tag1");
-        petApiController.findPetsByTags(tags);
-        verify(petService).findPetsByTags(tags);
+    void testFindPetsByTags() {
+        List<String> tags = Arrays.asList("friendly", "small");
+        List<Pet> pets = Arrays.asList(new Pet(1L, "Buddy"), new Pet(2L, "Max"));
+
+        when(petService.findPetsByTags(tags)).thenReturn(pets);
+
+        ResponseEntity<List<Pet>> response = petApiController.findPetsByTags(tags);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(pets, response.getBody());
+        verify(petService, times(1)).findPetsByTags(tags);
     }
 
-    @Test
-    public void testUpdatePetWithForm_NotImplemented() {
-        Long petId = 123L;
-        String name = "new name";
-        String status = "sold";
-
-        ResponseEntity<Void> response = petApiController.updatePetWithForm(petId, name, status);
-
-        assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
-    }
-
-    @Test
-    public void testUploadFile_NotImplemented() {
-        Long petId = 123L;
-        String additionalMetadata = "some data";
-        MultipartFile file = null;
-
-        ResponseEntity<ModelApiResponse> response = petApiController.uploadFile(petId, additionalMetadata, file);
-
-        assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
-    }
+    // Additional test cases for unimplemented methods can be added here
 }

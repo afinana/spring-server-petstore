@@ -23,6 +23,12 @@ public class Pet   {
     super();
   }
 
+    public Pet(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+
   @ApiModelProperty(value = "0L")
   @JsonProperty("id")
   private Long id = null;

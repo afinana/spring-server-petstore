@@ -1,6 +1,8 @@
 package net.petstore.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
@@ -14,10 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class PetServiceImpl implements PetService {
+
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     PetRepository petRepository;
@@ -32,14 +43,22 @@ public class PetServiceImpl implements PetService {
     @Override
     public void addPet(Pet petDTO) {
 
-        net.petstore.domain.Pet pet = convertToEntity(petDTO);
-        petRepository.save(pet);
+        try {
+            String petJson = objectMapper.writeValueAsString(petDTO);
+            kafkaTemplate.send("pet-topic", "CREATE", petJson);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to publish pet event", e);
+        }
 
     }
 
     @Override
     public void deletePet(Long petId) {
-        petRepository.deleteById(petId);
+        try {
+            kafkaTemplate.send("pet-topic", "DELETE", String.valueOf(petId));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to publish pet event", e);
+        }
 
     }
 
@@ -100,8 +119,12 @@ public class PetServiceImpl implements PetService {
     @Override
     public void updatePet(Pet petDto) {
 
-        net.petstore.domain.Pet pet = convertToEntity(petDto);
-        petRepository.save(pet);
+        try {
+            String petJson = objectMapper.writeValueAsString(petDto);
+            kafkaTemplate.send("pet-topic", "UPDATE", petJson);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to publish pet event", e);
+        }
     }
 
     @Override
