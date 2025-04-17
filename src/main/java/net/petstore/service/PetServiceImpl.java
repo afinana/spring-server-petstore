@@ -9,6 +9,7 @@ import net.petstore.model.Pet;
 import net.petstore.repository.CustomPetRepository;
 import net.petstore.repository.PetRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,19 +17,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PetServiceImpl implements PetService {
 
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
     PetRepository petRepository;
@@ -45,7 +43,11 @@ public class PetServiceImpl implements PetService {
 
         try {
             String petJson = objectMapper.writeValueAsString(petDTO);
-            kafkaTemplate.send("pet-topic", "CREATE", petJson);
+            String routingKey = "pets-add.key";
+            rabbitTemplate.convertAndSend("petstore-exchange", routingKey, petJson);
+            log.info("Sent INSERT message with key {}: {}", routingKey, petJson);
+
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to publish pet event", e);
         }
@@ -55,10 +57,14 @@ public class PetServiceImpl implements PetService {
     @Override
     public void deletePet(Long petId) {
         try {
-            kafkaTemplate.send("pet-topic", "DELETE", String.valueOf(petId));
+            String routingKey = "pets-delete.key";
+            rabbitTemplate.convertAndSend("petstore-exchange", routingKey, petId);
+            log.info("Sent DELETE message with key {} : {}}", routingKey, petId);
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to publish pet event", e);
+            throw new RuntimeException("Failed to delete pet", e);
         }
+
 
     }
 
@@ -70,7 +76,7 @@ public class PetServiceImpl implements PetService {
 
         for (String myTag : tags) {
             // Query mongodb
-           // List<net.petstore.domain.Pet> domainPets = customPetRepository.findCustomPetByTag(myTag);
+            // List<net.petstore.domain.Pet> domainPets = customPetRepository.findCustomPetByTag(myTag);
             List<net.petstore.domain.Pet> domainPets = petRepository.findByTags_Name(myTag);
 
             // Convert domain query result to DTO list
@@ -89,7 +95,7 @@ public class PetServiceImpl implements PetService {
 
             net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum.fromValue(statusCode);
 
-            if (statusEnum==null){
+            if (statusEnum == null) {
                 throw new IllegalArgumentException("status parameter should be a valid value");
             }
 
@@ -119,12 +125,9 @@ public class PetServiceImpl implements PetService {
     @Override
     public void updatePet(Pet petDto) {
 
-        try {
-            String petJson = objectMapper.writeValueAsString(petDto);
-            kafkaTemplate.send("pet-topic", "UPDATE", petJson);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to publish pet event", e);
-        }
+        // Mimics deleting from Redis first, then publishing insert
+        deletePet(petDto.getId()); // Optional, depends on your data model
+        addPet(petDto);
     }
 
     @Override
@@ -140,20 +143,14 @@ public class PetServiceImpl implements PetService {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
     }
 
-
     private net.petstore.domain.Pet convertToEntity(Pet petDto) {
 
         return modelMapper.map(petDto, net.petstore.domain.Pet.class);
-
-
     }
-
 
     private Pet convertToDTO(net.petstore.domain.Pet petEntity) {
 
         return modelMapper.map(petEntity, Pet.class);
-
     }
-
 
 }
