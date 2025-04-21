@@ -65,7 +65,7 @@ public class UserServiceImpl implements  UserService{
     }
 
     public void createUsersWithArrayInput(List<User> body) {
-      // save all users
+        // save all users
         for (User user: body) {
             createUser(user);
         }

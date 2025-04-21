@@ -2,6 +2,7 @@ package net.petstore.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import net.petstore.model.User;
 import net.petstore.service.UserService;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @RestController
 @Slf4j
 public class UserApiController implements UserApi {
@@ -39,35 +40,39 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
         userService.createUser(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
-
-
     }
 
     public ResponseEntity<Void> createUsersWithArrayInput(@ApiParam(value = "List of user object" ,required=true )  @Valid @RequestBody List<User> body) {
-        String accept = request.getHeader("Accept");
-        userService.createUsersWithListInput(body);
+
+        userService.createUsersWithArrayInput(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> createUsersWithListInput(@ApiParam(value = "List of user object" ,required=true )  @Valid @RequestBody List<User> body) {
-        String accept = request.getHeader("Accept");
-        userService.createUsersWithListInput(body);
+
+        userService.createUsersWithArrayInput(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> deleteUser(@ApiParam(value = "The name that needs to be deleted",required=true) @PathVariable("username") String username) {
-        String accept = request.getHeader("Accept");
-        userService.deleteUser(username);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+          userService.deleteUser(username);
+          return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing. ",required=true) @PathVariable("username") String username) {
         String accept = request.getHeader("Accept");
-        User user = userService.getUserByName(username);
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+            try {
+                User user = userService.getUserByName(username);
+                return new ResponseEntity<User>(user, HttpStatus.OK);
+
+          } catch (Exception e) {
+                log.error("Couldn't serialize response for content type application/json", e);
+                return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+
     }
 
     public ResponseEntity<String> loginUser(@NotNull @ApiParam(value = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,@NotNull @ApiParam(value = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password) {

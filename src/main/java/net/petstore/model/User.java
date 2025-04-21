@@ -11,7 +11,7 @@ import java.util.Objects;
  * User
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class User   {
 
@@ -25,7 +25,7 @@ public class User   {
 
   @JsonProperty("username")
   @ApiModelProperty(value = "name")
-  private String username = null;
+  private String userName = null;
 
   @JsonProperty("firstName")
   @ApiModelProperty(value = "firstName")
@@ -51,12 +51,6 @@ public class User   {
   @ApiModelProperty(value = "userStatus")
   private Integer userStatus = null;
 
-
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, username, firstName, lastName, email, password, phone, userStatus);
-  }
 
 }
 

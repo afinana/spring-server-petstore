@@ -1,6 +1,7 @@
 package net.petstore.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
 import net.petstore.repository.PetRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PetServiceImpl implements PetService {
 
     @Autowired
@@ -24,10 +26,11 @@ public class PetServiceImpl implements PetService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final Logger log = LoggerFactory.getLogger(net.petstore.api.PetApiController.class);
+
 
     public void addPet( Pet petDTO) {
-
+        // log request
+        log.info("addPet: {}", petDTO);
         net.petstore.domain.Pet pet = convertToEntity(petDTO);
         petRepository.save(pet);
 
@@ -35,12 +38,16 @@ public class PetServiceImpl implements PetService {
 
 
     public void deletePet( Long petId ) {
+        // log request
+        log.info("deletePet: {}", petId);
         petRepository.deleteById(petId);
 
     }
 
     public List<Pet> findPetsByTags(List<String> tags) {
 
+        // log request
+        log.info("findPetsByTags: {}", tags);
 
         List<Pet> petArrayList = new ArrayList<>();
         for (String  myTag: tags) {
@@ -57,6 +64,9 @@ public class PetServiceImpl implements PetService {
 
     public List<Pet> findPetsByStatus(List<String> statusList) {
 
+        // log request
+        log.info("findPetsByStatus: {}", statusList);
+
         ArrayList<Pet> petArrayList = new ArrayList<>();
         for (String  statusCode: statusList) {
 
@@ -72,6 +82,9 @@ public class PetServiceImpl implements PetService {
     }
     public Pet getPetById(Long petId) {
 
+        // log request
+        log.info("getPetById: {}", petId);
+
         Optional<net.petstore.domain.Pet> pet = petRepository.findById(petId);
         Pet result = null;
         if (pet.isPresent()) {
@@ -83,16 +96,13 @@ public class PetServiceImpl implements PetService {
 
     public void updatePet(Pet petDto) {
 
+        // log request
+        log.info("updatePet: {}", petDto);
         net.petstore.domain.Pet pet = convertToEntity(petDto);
         petRepository.save(pet);
     }
 
-    public void updatePetWithForm( Long petId,
-                                    String name,
-                                  String status) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
 
-    }
 
     public ModelApiResponse uploadFile( Long petId, String additionalMetadata, MultipartFile file) {
         throw new java.lang.UnsupportedOperationException("Not supported yet.");
@@ -100,13 +110,20 @@ public class PetServiceImpl implements PetService {
 
     private net.petstore.domain.Pet convertToEntity(Pet petDto) {
 
-       return modelMapper.map(petDto, net.petstore.domain.Pet.class);
+        return modelMapper.map(petDto, net.petstore.domain.Pet.class);
 
 
     }
     private Pet convertToDTO(net.petstore.domain.Pet petEntity) {
 
         return modelMapper.map(petEntity, Pet.class);
+
+    }
+    public void updatePetWithForm( Long petId,
+                                   String name,
+                                   String status) {
+        // TODO: Implement...
+        throw new java.lang.UnsupportedOperationException("Not supported yet.");
 
     }
 
