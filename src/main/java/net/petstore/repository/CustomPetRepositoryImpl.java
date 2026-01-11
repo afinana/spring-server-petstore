@@ -1,66 +1,58 @@
 package net.petstore.repository;
 
 
-import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
-import net.petstore.model.Pet;
-import net.petstore.model.PetStatusEnum;
+import net.petstore.domain.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
-@Component
 @Slf4j
+@Service
 public class  CustomPetRepositoryImpl implements CustomPetRepository {
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private RedisTemplate<Object, Object> redisTemplate;
 
-    @Override
-    public void updatePetQuantity(String name, PetStatusEnum status) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(name));
-
-        Update update = new Update();
-        update.set("status", status);
-        UpdateResult result = mongoTemplate.updateFirst(query, update, Pet.class);
-
-        if  (result == null) {
-            log.info("No documents updated");
-        }else {
-            log.info(result.getModifiedCount() + " document(s) updated..");
-        }
-
-    }
-
-    @Override
-    public List<Pet> findPetByName(String name) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(name));
-
-        return mongoTemplate.find(query, Pet.class);
-
-    }
 
     @Override
     public List<Pet> findCustomPetByTag(String tag) {
 
-        ArrayList<String> tagsArray = new ArrayList<>();
-        tagsArray.add(tag);
+        // search pets by tags Name using redisTemplate
+        List<Pet> petList = new ArrayList<>();
+        String key="pet:tags.name:"+tag;
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("array").all(tagsArray));
+        // get all pet ids by tag name using redisTemplate
+        Set<Object> ids = redisTemplate.opsForSet().members(key);
 
-        return mongoTemplate.find(query, Pet.class);
+
+        // get all pets by ids using redisTemplate
+        if (ids == null) {
+            return petList;
+        }
+        // convert ids to string
+        List<String> idList = new ArrayList<>();
+        for (Object id : ids) {
+            String idStr = "pet:"+id.toString();
+            idList.add(idStr);
+        }
+        // for each pet id of idList get pet object
+        for (Object id : idList) {
+            Map petMap = (Map) redisTemplate.opsForValue().get("pet:"+id);
+            Pet pet = new ObjectMapper().convertValue(petMap, Pet.class);
+            petList.add(pet);
+        }
+
+        log.info("petList: {}", petList);
+        return petList;
 
     }
-
-
 }

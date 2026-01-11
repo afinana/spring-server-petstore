@@ -70,10 +70,23 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
         <!-- Mongo db -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Update validation-api dependency -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <!-- Other dependencies -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
         </dependency>
 
         <!-- Spring Security -->
@@ -131,6 +144,4 @@
             <version>1.5.24</version>
         </dependency>
     </dependencies>
-
-
 </project>

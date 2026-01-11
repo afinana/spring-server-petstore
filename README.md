@@ -1,4 +1,4 @@
-# Swagger generated server -20203102812058
+# Swagger generated server 
 
 Spring Boot Server 
 

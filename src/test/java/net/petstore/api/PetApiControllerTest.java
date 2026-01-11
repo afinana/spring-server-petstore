@@ -20,7 +20,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PetApiControllerTest {
+
+class PetApiControllerTest {
 
     @Mock
     private PetService petService;
@@ -34,21 +35,27 @@ public class PetApiControllerTest {
     }
 
     @Test
-    public void testAddPet() {
+
+    void testAddPet() {
+
         Pet pet = new Pet();
         petApiController.addPet(pet);
         verify(petService).addPet(pet);
     }
 
     @Test
-    public void testDeletePet() {
+
+    void testDeletePet() {
+
         Long petId = 123L;
         petApiController.deletePet(petId, null);
         verify(petService).deletePet(petId);
     }
 
     @Test
-    public void testGetPetById_Found() {
+
+    void testGetPetById_Found() {
+
         Long petId = 123L;
         Pet pet = new Pet();
         when(petService.getPetById(petId)).thenReturn(pet);
@@ -60,7 +67,9 @@ public class PetApiControllerTest {
     }
 
     @Test
-    public void testGetPetById_NotFound() {
+
+    void testGetPetById_NotFound() {
+
         Long petId = 123L;
         when(petService.getPetById(petId)).thenReturn(null);
 
@@ -69,15 +78,14 @@ public class PetApiControllerTest {
     }
 
     @Test
-    public void testUpdatePet() {
+    void testUpdatePet() {
         Pet pet = new Pet();
 
         petApiController.updatePet(pet);
         verify(petService).updatePet(pet);
     }
 
-    @Test
-    public void testFindPetsByStatus() {
+    void testFindPetsByStatus() {
         List<String> status = new ArrayList<>();
         status.add("available");
 
@@ -86,16 +94,16 @@ public class PetApiControllerTest {
     }
 
     @Test
-    public void testFindPetsByTags() {
+    void testFindPetsByTags() {
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
-
         petApiController.findPetsByTags(tags);
         verify(petService).findPetsByTags(tags);
     }
 
     @Test
-    public void testUpdatePetWithForm_NotImplemented() {
+    void testUpdatePetWithForm_NotImplemented() {
+
         Long petId = 123L;
         String name = "new name";
         String status = "sold";
@@ -105,7 +113,9 @@ public class PetApiControllerTest {
     }
 
     @Test
-    public void testUploadFile_NotImplemented() {
+
+    void testUploadFile_NotImplemented() {
+
         Long petId = 123L;
         String additionalMetadata = "some data";
         MultipartFile file = null;

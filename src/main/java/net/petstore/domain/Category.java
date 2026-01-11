@@ -3,13 +3,14 @@ package net.petstore.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.redis.core.RedisHash;
+
 
 /**
  * Category
  */
+@RedisHash("category")
 @Data
-@Document("category")
 public class Category   {
   public Category(){
     super();

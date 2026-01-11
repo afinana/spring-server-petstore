@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.exceptions.base.MockitoException;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class StoreApiControllerTest {
+
+class StoreApiControllerTest {
+
 
     @Mock
     private StoreApi storeApi;
@@ -36,7 +39,9 @@ public class StoreApiControllerTest {
     }
 
     @Test
-    public void testPlaceOrderWithJsonAcceptHeader() throws IOException {
+
+    void testPlaceOrderWithJsonAcceptHeader() throws IOException {
+
         // Mock order object
         Order order = new Order();
         order.setId(0L);
@@ -65,7 +70,9 @@ public class StoreApiControllerTest {
 
 
     @Test
-    public void testPlaceOrderWithoutAcceptHeader() {
+
+    void testPlaceOrderWithoutAcceptHeader() {
+
         // Mock order object (doesn't matter for this test)
         Order order = new Order();
 

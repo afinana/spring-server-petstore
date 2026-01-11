@@ -3,13 +3,15 @@ package net.petstore.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.redis.core.RedisHash;
+
 
 /**
  * MapInventory
  */
+
+@RedisHash("mapinventory")
 @Data
-@Document("mapinventory")
 public class MapInventory   {
 
   public MapInventory(){

@@ -22,6 +22,7 @@ jobs:
       USER_ACCOUNT: middleland
       IMAGE_NAME: spring-server-petstore
       TAG_NAME: mongo
+
       
     permissions:
       contents: read
