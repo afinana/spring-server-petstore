@@ -23,7 +23,7 @@ public class Swagger2SpringBoot{
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/public").permitAll()
-                                .requestMatchers("/api/users/**").authenticated()
+                                .requestMatchers("/v2/**").authenticated()
                                 .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt());
