@@ -2,7 +2,7 @@ package net.petstore.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,7 +15,6 @@ import java.util.List;
  * Pet
  */
 @Validated
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class Pet   {
 
@@ -23,37 +22,36 @@ public class Pet   {
     super();
   }
 
-  @ApiModelProperty(value = "0L")
+  @Schema(description = "Pet ID", example = "0")
   @JsonProperty("id")
   private Long id = null;
 
-  @ApiModelProperty(value = "category")
+  @Schema(description = "category")
   @Valid
   @JsonProperty("category")
   private Category category = null;
 
 
-  @ApiModelProperty(example = "doggie", required = true, value = "")
+  @Schema(description = "Name of the pet", example = "doggie", required = true)
   @NotNull
   @JsonProperty("name")
   private String name = null;
 
-  @ApiModelProperty(required = true, value = "")
+  @Schema(description = "Photo URLs", required = true)
   @NotNull
   @JsonProperty("photoUrls")
   @Valid
   private List<String> photoUrls = new ArrayList<String>();
 
-  @ApiModelProperty(value = "tags")
+  @Schema(description = "tags")
   @JsonProperty("tags")
   @Valid
   private List<Tag> tags = null;
 
 
-  @ApiModelProperty(value = "pet status in the store")
+  @Schema(description = "pet status in the store")
   @JsonProperty("status")
   private PetStatusEnum status = null;
 
 
 }
-

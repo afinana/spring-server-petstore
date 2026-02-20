@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: petstore
+
+  # Virtual Threads — Java 21 feature for high concurrency with low memory overhead
+  threads:
+    virtual:
+      enabled: true
+
+  data:
+    mongodb:
+      authentication-database: admin
+      database: petstore
+      uri: mongodb://root:example@localhost:27017/admin?retryWrites=true&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256
+
+  jackson:
+    date-format: net.petstore.RFC3339DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+  # Caffeine cache — high-performance in-memory caching
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+
+# SpringDoc OpenAPI — replaces Springfox
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
