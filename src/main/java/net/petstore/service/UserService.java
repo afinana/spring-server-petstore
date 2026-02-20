@@ -15,6 +15,8 @@ public interface UserService {
 
     public User getUserByName(String username) ;
 
+    public List<User> getAllUsers();
+
     public String loginUser(String username, String password) ;
 
     public void logoutUser();

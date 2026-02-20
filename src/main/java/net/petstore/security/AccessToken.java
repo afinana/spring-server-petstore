@@ -4,18 +4,17 @@ package net.petstore.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.Objects.isNull;
 
@@ -27,38 +26,47 @@ public class AccessToken {
     private final String value;
 
     public AccessToken(String value) {
-        this.value = value;
+        this.value = value == null ? "" : value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
+    /** Returns authorities derived from the standard JWT {@code scope} claim. */
     public Collection<? extends GrantedAuthority> getAuthorities() {
         JsonObject payloadAsJson = getPayloadAsJsonObject();
-
-        return StreamSupport.stream(
-                        payloadAsJson.getAsJsonObject("realm_access").getAsJsonArray("roles").spliterator(), false)
-                .map(JsonElement::getAsString)
+        if (payloadAsJson == null) {
+            return List.of();
+        }
+        String scope = Optional.ofNullable(payloadAsJson.getAsJsonPrimitive("scope"))
+                .map(e -> e.getAsString())
+                .orElse("");
+        return Arrays.stream(scope.split(" "))
+                .filter(s -> !s.isBlank())
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    /** Returns the subject ({@code sub} claim) as the username. */
     public String getUsername() {
         JsonObject payloadAsJson = getPayloadAsJsonObject();
-
-        return Optional.ofNullable(
-                        payloadAsJson.getAsJsonPrimitive("preferred_username").getAsString())
+        if (payloadAsJson == null) {
+            return "";
+        }
+        return Optional.ofNullable(payloadAsJson.getAsJsonPrimitive("sub"))
+                .map(e -> e.getAsString())
                 .orElse("");
     }
 
     private JsonObject getPayloadAsJsonObject() {
-        DecodedJWT decodedJWT = decodeToken(value);
-        return decodeTokenPayloadToJsonObject(decodedJWT);
+        try {
+            DecodedJWT decodedJWT = decodeToken(value);
+            return decodeTokenPayloadToJsonObject(decodedJWT);
+        } catch (RuntimeException ex) {
+            // Token is missing or invalid — treat as anonymous (no roles, empty username)
+            return null;
+        }
     }
 
     private DecodedJWT decodeToken(String value) {
-        if (isNull(value)) {
+        if (isNull(value) || value.isBlank()) {
             throw new InvalidTokenException("Token has not been provided");
         }
         return JWT.decode(value);

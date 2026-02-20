@@ -71,4 +71,10 @@ public class PetServiceImpl implements PetService {
     public ModelApiResponse uploadFile(Long petId, String additionalMetadata, MultipartFile file) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public List<Pet> getAllPets() {
+        return petRepository.findAll().stream()
+                .map(petMapper::toDto)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

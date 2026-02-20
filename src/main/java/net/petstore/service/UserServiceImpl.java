@@ -54,6 +54,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public List<User> getAllUsers() {
+        log.info("getAllUsers");
+        List<net.petstore.domain.User> users = userRepository.findAll();
+        return users.stream().map(userMapper::toDto).toList();
+    }
+
     public void createUsersWithArrayInput(List<User> body) {
         body.forEach(this::createUser);
     }
