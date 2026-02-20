@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class RolesAspect {
 
-    @Before("@net.petstore.security.annotation.AllowedRoles)")
+    @Before("@annotation(net.petstore.security.annotation.AllowedRoles)")
     public void before(JoinPoint joinPoint) {
 
         String[] expectedRoles = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(AllowedRoles.class).value();

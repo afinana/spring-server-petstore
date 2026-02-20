@@ -6,67 +6,53 @@ import com.auth0.jwk.JwkProvider;
 import lombok.RequiredArgsConstructor;
 import net.petstore.security.JwtTokenValidator;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-@Order(1)
+@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${spring.security.ignored}")
-    private String nonSecureUrl;
+public class SecurityConfig {
 
     @Value("${keycloak.jwk}")
     private String jwkProviderUrl;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager,
+                                           JwtTokenValidator jwtTokenValidator) throws Exception {
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable()
-                .cors()
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
-                .and()
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configure(http))
+                .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()))
                 .addFilterBefore(
                         new AccessTokenFilter(
-                                jwtTokenValidator(keycloakJwkProvider()),
-                                authenticationManagerBean(),
+                                jwtTokenValidator,
+                                authenticationManager,
                                 authenticationFailureHandler()),
-                        BasicAuthenticationFilter.class);
+                        BasicAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
+                );
+        return http.build();
     }
 
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(nonSecureUrl);
-    }
-
-    @SuppressWarnings("EmptyMethod")
-    @ConditionalOnMissingBean
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean

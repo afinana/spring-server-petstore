@@ -24,10 +24,14 @@ public class AccessToken {
 
 
     public static final String BEARER = "Bearer ";
-    final String value ;
+    private final String value;
 
     public AccessToken(String value) {
         this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

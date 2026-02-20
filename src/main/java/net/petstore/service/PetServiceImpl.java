@@ -1,114 +1,74 @@
 package net.petstore.service;
 
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.petstore.mapper.PetMapper;
 import net.petstore.model.ModelApiResponse;
 import net.petstore.model.Pet;
 import net.petstore.repository.PetRepository;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
-    @Autowired
-    PetRepository petRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final PetRepository petRepository;
+    private final PetMapper petMapper;
 
-    private static final Logger log = LoggerFactory.getLogger(net.petstore.api.PetApiController.class);
-
-    public void addPet( Pet petDTO) {
-
-        net.petstore.domain.Pet pet = convertToEntity(petDTO);
+    public void addPet(Pet petDTO) {
+        net.petstore.domain.Pet pet = petMapper.toEntity(petDTO);
         petRepository.save(pet);
-
     }
 
-
-    public void deletePet( Long petId ) {
+    @CacheEvict(cacheNames = "pets", key = "#petId")
+    public void deletePet(Long petId) {
         petRepository.deleteById(petId);
-
     }
 
     public List<Pet> findPetsByTags(List<String> tags) {
-
-
-        List<Pet> petArrayList = new ArrayList<>();
-        for (String  myTag: tags) {
-            // Query mongodb
-            List<net.petstore.domain.Pet> domainPets = petRepository.findWithTags(myTag);
-
-            // Convert domain query result to DTO list
-            for (net.petstore.domain.Pet domainPet : domainPets) {
-                petArrayList.add(convertToDTO(domainPet));
-            }
-        }
-        return petArrayList;
+        return tags.stream()
+                .flatMap(tag -> petRepository.findWithTags(tag).stream())
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<Pet> findPetsByStatus(List<String> statusList) {
-
-        ArrayList<Pet> petArrayList = new ArrayList<>();
-        for (String  statusCode: statusList) {
-
-            net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum.fromValue(statusCode);
-            // Query mongodb
-            List<net.petstore.domain.Pet> domainPets = petRepository.findPetByStatus(statusEnum);
-            for (net.petstore.domain.Pet domainPet: domainPets){
-                // Convert domain query result to DTO list
-                petArrayList.add(convertToDTO(domainPet));
-            };
-        }
-        return petArrayList;
+        return statusList.stream()
+                .flatMap(statusCode -> {
+                    net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum.fromValue(statusCode);
+                    return petRepository.findPetByStatus(statusEnum).stream();
+                })
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
     }
+
+    @Cacheable(cacheNames = "pets", key = "#petId")
     public Pet getPetById(Long petId) {
-
         Optional<net.petstore.domain.Pet> pet = petRepository.findById(petId);
-        Pet result = null;
-        if (pet.isPresent()) {
-            result = convertToDTO(pet.get());
-        }
-        return result;
-
+        return pet.map(petMapper::toDto).orElse(null);
     }
 
+    @CacheEvict(cacheNames = "pets", key = "#petDto.id")
     public void updatePet(Pet petDto) {
-
-        net.petstore.domain.Pet pet = convertToEntity(petDto);
+        net.petstore.domain.Pet pet = petMapper.toEntity(petDto);
         petRepository.save(pet);
     }
 
-    public void updatePetWithForm( Long petId,
-                                    String name,
-                                  String status) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
-
+    public void updatePetWithForm(Long petId, String name, String status) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public ModelApiResponse uploadFile( Long petId, String additionalMetadata, MultipartFile file) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet.");
+    public ModelApiResponse uploadFile(Long petId, String additionalMetadata, MultipartFile file) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    private net.petstore.domain.Pet convertToEntity(Pet petDto) {
-
-       return modelMapper.map(petDto, net.petstore.domain.Pet.class);
-
-
-    }
-    private Pet convertToDTO(net.petstore.domain.Pet petEntity) {
-
-        return modelMapper.map(petEntity, Pet.class);
-
-    }
-
-
 }

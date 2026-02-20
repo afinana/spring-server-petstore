@@ -1,62 +1,50 @@
 package net.petstore.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
-
-import java.util.Objects;
 
 /**
  * User
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
 @Data
 public class User   {
 
   public User(){
     super();
   }
+
+  @Schema(description = "User ID")
   @JsonProperty("id")
-  @ApiModelProperty(value = "0L")
   private Long id = null;
 
-
+  @Schema(description = "Username")
   @JsonProperty("username")
-  @ApiModelProperty(value = "name")
   private String username = null;
 
+  @Schema(description = "First name")
   @JsonProperty("firstName")
-  @ApiModelProperty(value = "firstName")
   private String firstName = null;
 
+  @Schema(description = "Last name")
   @JsonProperty("lastName")
-  @ApiModelProperty(value = "lastName")
   private String lastName = null;
 
+  @Schema(description = "Email address")
   @JsonProperty("email")
-  @ApiModelProperty(value = "email")
   private String email = null;
 
+  @Schema(description = "Password")
   @JsonProperty("password")
-  @ApiModelProperty(value = "password")
   private String password = null;
 
+  @Schema(description = "Phone number")
   @JsonProperty("phone")
-  @ApiModelProperty(value = "phone")
   private String phone = null;
 
+  @Schema(description = "User Status")
   @JsonProperty("userStatus")
-  @ApiModelProperty(value = "userStatus")
   private Integer userStatus = null;
-
-
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, username, firstName, lastName, email, password, phone, userStatus);
-  }
-
 }
-
