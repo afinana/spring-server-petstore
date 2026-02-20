@@ -111,29 +111,17 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
-        <!-- Auth0 JWT / JWK for Keycloak token validation -->
+        <!-- Auth0 JWT — decode and validate JWT tokens -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>4.4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>jwks-rsa</artifactId>
-            <version>0.22.1</version>
         </dependency>
 
         <!-- Google Gson (used in JWT payload parsing) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-        </dependency>
-
-        <!-- Google Guava (used in KeycloakJwkProvider) -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>33.4.8-jre</version>
         </dependency>
 
         <!-- Testing -->

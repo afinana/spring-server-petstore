@@ -32,7 +32,7 @@ public class PetApiController implements PetApi {
             produces = {"application/json", "application/xml"},
             consumes = {"application/json", "application/xml"},
             method = RequestMethod.POST)
-    @AllowedRoles("ADMIN")
+    @AllowedRoles("VISITOR")
     public ResponseEntity<Void> addPet(@Parameter(description = "Pet object that needs to be added to the store", required = true) @Valid @RequestBody Pet body) {
         log.info("addPet body={}", body);
         petService.addPet(body);
@@ -42,7 +42,7 @@ public class PetApiController implements PetApi {
     @RequestMapping(value = "/pet/{petId}",
             produces = {"application/json", "application/xml"},
             method = RequestMethod.DELETE)
-    @AllowedRoles("ADMIN")
+    @AllowedRoles("VISITOR")
     public ResponseEntity<Void> deletePet(@Parameter(description = "Pet id to delete", required = true) @PathVariable("petId") Long petId,
                                           @Parameter(description = "Api Key") @RequestHeader(value = "api_key", required = false) String apiKey) {
         log.info("deletePet id={}", petId);
@@ -73,12 +73,26 @@ public class PetApiController implements PetApi {
             produces = {"application/json", "application/xml"},
             consumes = {"application/json", "application/xml"},
             method = RequestMethod.PUT)
-    @AllowedRoles("ADMIN")
+    @AllowedRoles("VISITOR")
     public ResponseEntity<Void> updatePet(@Parameter(description = "Pet object that needs to be added to the store", required = true) @Valid @RequestBody Pet body) {
         try {
             log.info("updatePet body={}", body);
             petService.updatePet(body);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/pet",
+            produces = {"application/json", "application/xml"},
+            method = RequestMethod.GET)
+    @AllowedRoles("VISITOR")
+    public ResponseEntity<List<Pet>> getAllPets() {
+        try {
+            List<Pet> pets = petService.getAllPets();
+            return new ResponseEntity<>(pets, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Couldn't serialize response for content type application/json", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -117,7 +131,7 @@ public class PetApiController implements PetApi {
             produces = {"application/json", "application/xml"},
             consumes = {"application/x-www-form-urlencoded"},
             method = RequestMethod.POST)
-    @AllowedRoles("ADMIN")
+    @AllowedRoles("VISITOR")
     public ResponseEntity<Void> updatePetWithForm(@Parameter(description = "ID of pet that needs to be updated", required = true) @PathVariable("petId") Long petId,
                                                   @Parameter(description = "Updated name of the pet") @RequestParam(value = "name", required = false) String name,
                                                   @Parameter(description = "Updated status of the pet") @RequestParam(value = "status", required = false) String status) {
@@ -128,7 +142,7 @@ public class PetApiController implements PetApi {
             produces = {"application/json"},
             consumes = {"multipart/form-data"},
             method = RequestMethod.POST)
-    @AllowedRoles("ADMIN")
+    @AllowedRoles("VISITOR")
     public ResponseEntity<ModelApiResponse> uploadFile(@Parameter(description = "ID of pet to update", required = true) @PathVariable("petId") Long petId,
                                                        @Parameter(description = "Additional data to pass to server") @RequestParam(value = "additionalMetadata", required = false) String additionalMetadata,
                                                        @Parameter(description = "file to upload") @Valid @RequestPart(value = "file", required = false) MultipartFile file) {

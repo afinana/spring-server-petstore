@@ -16,6 +16,8 @@ public interface PetService {
 
     List<Pet> findPetsByTags(List<String> tags);
 
+    List<Pet> getAllPets();
+
 
     Pet getPetById(Long petId);
 
@@ -27,4 +29,3 @@ public interface PetService {
 
     ModelApiResponse uploadFile(Long petId, String additionalMetadata, MultipartFile file);
 }
-

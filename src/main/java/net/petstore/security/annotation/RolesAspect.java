@@ -8,12 +8,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Aspect
 @Component
@@ -24,10 +24,15 @@ public class RolesAspect {
 
         String[] expectedRoles = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(AllowedRoles.class).value();
 
-        Collection<? extends GrantedAuthority> grantedAuthorities =
-                Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                        .map(Authentication::getAuthorities)
-                        .orElseThrow(() -> new AccessDeniedException("No authorities found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // No authentication or anonymous authentication -> treat as unauthenticated and allow (permitAll)
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return;
+        }
+        Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
+        if (grantedAuthorities == null || grantedAuthorities.isEmpty()) {
+            return;
+        }
 
         List<String> roles = grantedAuthorities.stream()
                 .map(GrantedAuthority::getAuthority)
