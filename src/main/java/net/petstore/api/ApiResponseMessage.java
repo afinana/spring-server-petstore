@@ -1,10 +1,11 @@
 package net.petstore.api;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2023-05-06T17:38:50.285Z")
-@Data
+@Getter
+@Setter
 public class ApiResponseMessage {
     public static final int ERROR = 1;
     public static final int WARNING = 2;

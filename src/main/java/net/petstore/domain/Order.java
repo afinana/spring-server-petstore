@@ -3,7 +3,7 @@ package net.petstore.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.OffsetDateTime;
 
@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
  * Order
  */
 @Data
-@RedisHash("order")
+@Document("order")
 public class Order   {
   public Order(){
     super();

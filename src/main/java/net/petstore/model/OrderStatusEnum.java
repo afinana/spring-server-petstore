@@ -13,7 +13,7 @@ public enum OrderStatusEnum{
 
     DELIVERED("delivered");
 
-    private final String value;
+    private String value;
 
     OrderStatusEnum(String value) {
         this.value = value;

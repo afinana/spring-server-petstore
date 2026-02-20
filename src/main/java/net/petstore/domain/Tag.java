@@ -2,15 +2,13 @@ package net.petstore.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Tag
  */
 @Data
-@RedisHash("tag")
+@Document("tag")
 public class Tag   {
 
   public Tag(){
@@ -19,7 +17,6 @@ public class Tag   {
 
   @Id
   private Long id = null;
-  @Indexed
   private String name = null;
 
 }

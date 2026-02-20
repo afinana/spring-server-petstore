@@ -12,17 +12,20 @@ on:
   pull_request:
     branches: [ main]
 
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: docker.io
+  # github.repository as <account>/<repo>
+  USER_ACCOUNT: ${{ secrets.DOCKERHUB_USERNAME }}
+  USER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  IMAGE_NAME: spring-mongo-server-petstore
+
+
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
-    env:
-      # Use docker.io for Docker Hub if empty
-      REGISTRY: docker.io
-      # github.repository as <account>/<repo>
-      USER_ACCOUNT: middleland
-      IMAGE_NAME: spring-server-petstore
-      TAG_NAME: redis
-      
     permissions:
       contents: read
       packages: write
@@ -31,41 +34,65 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      - name: Build and test
-        run: mvn --batch-mode --update-snapshots clean package
-        
-      # Workaround: https://github.com/docker/build-push-action/issues/461
-      - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
+        uses: actions/checkout@v4
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+
+      # Login to registry for non-PR events
+      - name: Log into registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
-          username:  ${{ env.USER_ACCOUNT }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ env.USER_ACCOUNT }}
+          password: ${{ env.USER_PASSWORD }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      #- name: Extract Docker metadata
-      #  id: meta
-      #  uses: docker/metadata-action@v5
-      #  with:
-      #    context: .          
-      #    images: name/app
-        
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
+      # Extract metadata (tags, labels) for Docker images
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.USER_ACCOUNT }}/${{ env.IMAGE_NAME }}
+
+      # Decide build args: skip tests by default; for SNAPSHOT builds, enable cache-bust
+      - name: Prepare build args
+        id: buildargs
+        run: |
+          echo "MAVEN_ARGS=-DskipTests" >> $GITHUB_OUTPUT
+          if grep -q "-SNAPSHOT" pom.xml || grep -q "<version>.*SNAPSHOT.*</version>" pom.xml; then
+            echo "Detected SNAPSHOT version in pom.xml"
+            echo "CACHE_BUST=$(date +%s)" >> $GITHUB_OUTPUT
+          else
+            echo "CACHE_BUST=" >> $GITHUB_OUTPUT
+          fi
+
+      # Build and push Docker image (uses the repo's Dockerfile which performs the Maven build)
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v4
         with:
-          context: .          
+          context: .
+          file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.USER_ACCOUNT }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
-    
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            MAVEN_ARGS=${{ steps.buildargs.outputs.MAVEN_ARGS }}
+            CACHE_BUST=${{ steps.buildargs.outputs.CACHE_BUST }}
+          labels: |-
+            org.opencontainers.image.created=${{ steps.meta.outputs.date }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image details
+        if: always()
+        run: |
+          echo "Image tags: ${{ steps.meta.outputs.tags }}"

@@ -2,17 +2,26 @@ package net.petstore.repository;
 
 import net.petstore.domain.Pet;
 import net.petstore.domain.PetStatusEnum;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
 
-@Repository
-public  interface PetRepository extends CrudRepository<Pet, Long> {
+public  interface PetRepository extends MongoRepository<Pet, Long> {
+
+    @Query("{ 'name' : ?0 }")
+    List<Pet> findPetByName(String name);
+
+    @Query("{ 'name' : { $regex: ?0 } }")
+    List<Pet> findPetsByRegexpName(String regexp);
 
 
-    List<Pet> findByStatus(PetStatusEnum statusEnum);
+    @Query(value = "{ 'tags': { $elemMatch: { 'name' : ?0 }}}")
+    List<Pet> findWithTags(String tag);
 
-    List<Pet> findByTags_Name(String myTag);
+    @Query(value = "{ 'status': ?0 }")
+    List<Pet> findPetByStatus(PetStatusEnum statusEnum);
+
+
 }
