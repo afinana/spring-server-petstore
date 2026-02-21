@@ -22,6 +22,13 @@ import java.util.List;
 @RequestMapping(value = "/v2")
 public interface UserApi {
 
+    // declare getAllUsers as default method to avoid breaking existing implementations of UserApi
+    @Operation(summary = "Get all users", description = "Returns all users from the system that the user has access to", tags={ "user" })
+    @RequestMapping(value = "/user",
+        produces = { "application/json", "application/xml" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<User>> getAllUsers();
+
     @Operation(summary = "Create user", description = "This can only be done by the logged in user.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "successful operation") })
     @RequestMapping(value = "/user",

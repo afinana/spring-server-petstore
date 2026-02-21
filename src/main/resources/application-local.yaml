@@ -1,5 +1,7 @@
 server:
-  port: 8090
+  # Local override: allow SERVER_ADDR/ SERVER_PORT env vars
+  address: ${SERVER_ADDR:127.0.0.1}
+  port: ${SERVER_PORT:8090}
 
 spring:
   application:
@@ -14,7 +16,8 @@ spring:
     mongodb:
       authentication-database: admin
       database: petstore
-      uri: mongodb://root:example@localhost:27017/admin?retryWrites=true&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256
+      # Local Mongo with defaults; override with DATABASE_URI env var
+      uri: ${DATABASE_URI:mongodb://root:example@localhost:27017/?authSource=admin}
 
   jackson:
     date-format: net.petstore.RFC3339DateFormat
@@ -26,4 +29,3 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=500,expireAfterWrite=600s
-

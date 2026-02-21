@@ -1,5 +1,7 @@
 server:
-  port: 8080
+  # Allow overriding server address via env var SERVER_ADDR (default 127.0.0.1:8080)
+  address: ${SERVER_ADDR:127.0.0.1}
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
@@ -14,7 +16,8 @@ spring:
     mongodb:
       authentication-database: admin
       database: petstore
-      uri: mongodb://root:example@localhost:27017/admin?retryWrites=true&connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256
+      # Allow overriding MongoDB connection via env var DATABASE_URI with sensible default
+      uri: ${DATABASE_URI:mongodb://root:example@localhost:27017/?authSource=admin}
 
   jackson:
     date-format: net.petstore.RFC3339DateFormat

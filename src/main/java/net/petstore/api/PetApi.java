@@ -24,6 +24,13 @@ import java.util.List;
 @RequestMapping(value = "/v2")
 public interface PetApi {
 
+    @Operation(summary = "Get all pets", description = "Returns all pets from the system that the user has access to", tags={ "pet" })
+    @RequestMapping(value = "/pet",
+    produces = {"application/json", "application/xml"},
+    method = RequestMethod.GET)
+    ResponseEntity<List<Pet>> getAllPets();
+
+
     @Operation(summary = "Add a new pet to the store")
     @ApiResponses(value = { @ApiResponse(responseCode = "405", description = "Invalid input") })
     @RequestMapping(value = "/pet",
