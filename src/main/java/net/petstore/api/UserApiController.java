@@ -1,6 +1,5 @@
 package net.petstore.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,8 +19,6 @@ import java.util.List;
 @RequestMapping(value = "/v2")
 public class UserApiController implements UserApi {
 
-    private final ObjectMapper objectMapper;
-    private final HttpServletRequest request;
     private final UserService userService;
 
 
@@ -83,25 +78,7 @@ public class UserApiController implements UserApi {
         method = RequestMethod.GET)
     public ResponseEntity<String> loginUser(@NotNull @Parameter(description = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,
                                             @NotNull @Parameter(description = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("{  \"blank\": true,  \"bytes\": [],  \"empty\": true}", String.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        if (accept != null && accept.contains("application/xml")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("aeiou", String.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/xml", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
+        // Login is not yet implemented
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
