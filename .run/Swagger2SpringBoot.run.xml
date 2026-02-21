@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Swagger2SpringBoot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="local" />
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
+    <module name="spring-swagger-petstore" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="net.petstore.Swagger2SpringBoot" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="net.petstore.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
