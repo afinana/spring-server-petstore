@@ -12,7 +12,7 @@ import java.util.List;
  * Pet
  */
 @Data
-@Document("pet")
+@Document("pets")
 public class Pet   {
 
   public Pet(){
