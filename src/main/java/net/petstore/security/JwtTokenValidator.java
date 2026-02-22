@@ -16,13 +16,15 @@ import static java.util.Objects.isNull;
 public class JwtTokenValidator {
 
     public AccessToken validateAuthorizationHeader(String authorizationHeader) throws InvalidTokenException {
-        // Disabled strict validation: return an AccessToken even when header is missing or malformed.
+        // Disabled strict validation: return an AccessToken even when header is missing
+        // or malformed.
         // This effectively disables JWT validation as requested.
         String tokenValue = subStringBearer(authorizationHeader);
         // skip validateToken(tokenValue);
         return new AccessToken(tokenValue);
     }
 
+    @SuppressWarnings("unused")
     private void validateToken(String value) {
         DecodedJWT decodedJWT = decodeToken(value);
         verifyTokenHeader(decodedJWT);
@@ -83,7 +85,6 @@ public class JwtTokenValidator {
         }
     }
 
-
     private boolean hasTokenScopeInfo(JsonObject payloadAsJson) {
         return payloadAsJson.has("scope");
     }
@@ -92,7 +93,8 @@ public class JwtTokenValidator {
         if (authorizationHeader == null) {
             return "";
         }
-        // If header starts with "Bearer ", strip it; otherwise assume header contains the raw token.
+        // If header starts with "Bearer ", strip it; otherwise assume header contains
+        // the raw token.
         if (authorizationHeader.startsWith(AccessToken.BEARER)) {
             return authorizationHeader.substring(AccessToken.BEARER.length());
         }

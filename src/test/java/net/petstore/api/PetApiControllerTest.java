@@ -25,11 +25,13 @@ import net.petstore.security.config.SecurityConfig;
 /**
  * Slice tests for PetApiController.
  * SecurityConfig permits all requests, so no authentication setup is needed.
- * UserService is mocked to prevent Spring from trying to load MongoDB repositories
+ * UserService is mocked to prevent Spring from trying to load MongoDB
+ * repositories
  * that are not available in a WebMvcTest slice.
  */
 @WebMvcTest(PetApiController.class)
 @Import(SecurityConfig.class)
+@SuppressWarnings("null")
 class PetApiControllerTest {
 
     @Autowired
@@ -106,8 +108,8 @@ class PetApiControllerTest {
         doNothing().when(petService).addPet(any(Pet.class));
 
         mockMvc.perform(post("/v2/pet")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(pet)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isOk());
 
         verify(petService).addPet(any(Pet.class));
@@ -120,8 +122,8 @@ class PetApiControllerTest {
         doNothing().when(petService).updatePet(any(Pet.class));
 
         mockMvc.perform(put("/v2/pet")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(pet)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(pet)))
                 .andExpect(status().isOk());
 
         verify(petService).updatePet(any(Pet.class));
@@ -146,8 +148,8 @@ class PetApiControllerTest {
         when(petService.findPetsByStatus(List.of("available"))).thenReturn(List.of(pet));
 
         mockMvc.perform(get("/v2/pet/findByStatus")
-                        .param("status", "available")
-                        .accept(MediaType.APPLICATION_JSON))
+                .param("status", "available")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].status").value("available"));
     }
@@ -157,8 +159,8 @@ class PetApiControllerTest {
         when(petService.findPetsByStatus(List.of("sold"))).thenReturn(List.of());
 
         mockMvc.perform(get("/v2/pet/findByStatus")
-                        .param("status", "sold")
-                        .accept(MediaType.APPLICATION_JSON))
+                .param("status", "sold")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
@@ -170,10 +172,9 @@ class PetApiControllerTest {
         when(petService.findPetsByTags(List.of("cute"))).thenReturn(List.of(pet));
 
         mockMvc.perform(get("/v2/pet/findByTags")
-                        .param("tags", "cute")
-                        .accept(MediaType.APPLICATION_JSON))
+                .param("tags", "cute")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Buddy"));
     }
 }
-

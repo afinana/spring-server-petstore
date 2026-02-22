@@ -1,22 +1,21 @@
 package net.petstore;
 
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
-
-public class RFC3339DateFormat extends ISO8601DateFormat {
+public class RFC3339DateFormat extends StdDateFormat {
 
   private static final long serialVersionUID = 1L;
 
-  // Same as ISO8601DateFormat but serializing milliseconds.
   @Override
   public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
-    String value = ISO8601Utils.format(date, true);
-    toAppendTo.append(value);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    toAppendTo.append(sdf.format(date));
     return toAppendTo;
   }
-
 }

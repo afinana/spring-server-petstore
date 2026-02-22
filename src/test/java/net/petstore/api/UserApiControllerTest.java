@@ -23,11 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Slice tests for UserApiController.
  * SecurityConfig permits all requests, so no authentication setup is needed.
- * PetService is mocked to prevent Spring from trying to load MongoDB repositories
+ * PetService is mocked to prevent Spring from trying to load MongoDB
+ * repositories
  * that are not available in a WebMvcTest slice.
  */
 @WebMvcTest(UserApiController.class)
 @Import(SecurityConfig.class)
+@SuppressWarnings("null")
 class UserApiControllerTest {
 
     @Autowired
@@ -79,7 +81,8 @@ class UserApiControllerTest {
                 .andExpect(jsonPath("$").isEmpty());
     }
 
-    // ─── GET /v2/user/{username} ──────────────────────────────────────────────────
+    // ─── GET /v2/user/{username}
+    // ──────────────────────────────────────────────────
 
     @Test
     void getUserByName_whenExists_shouldReturn200() throws Exception {
@@ -93,7 +96,8 @@ class UserApiControllerTest {
 
     @Test
     void getUserByName_whenNotFound_shouldReturn200WithNullBody() throws Exception {
-        // Controller always returns 200 regardless — null body is serialized as empty JSON
+        // Controller always returns 200 regardless — null body is serialized as empty
+        // JSON
         when(userService.getUserByName("nobody")).thenReturn(null);
 
         mockMvc.perform(get("/v2/user/nobody").accept(MediaType.APPLICATION_JSON))
@@ -107,42 +111,45 @@ class UserApiControllerTest {
         doNothing().when(userService).createUser(any(User.class));
 
         mockMvc.perform(post("/v2/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk());
 
         verify(userService).createUser(any(User.class));
     }
 
-    // ─── POST /v2/user/createWithArray ────────────────────────────────────────────
+    // ─── POST /v2/user/createWithArray
+    // ────────────────────────────────────────────
 
     @Test
     void createUsersWithArrayInput_shouldReturn200() throws Exception {
         doNothing().when(userService).createUsersWithListInput(anyList());
 
         mockMvc.perform(post("/v2/user/createWithArray")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(user))))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(user))))
                 .andExpect(status().isOk());
 
         verify(userService).createUsersWithListInput(anyList());
     }
 
-    // ─── POST /v2/user/createWithList ─────────────────────────────────────────────
+    // ─── POST /v2/user/createWithList
+    // ─────────────────────────────────────────────
 
     @Test
     void createUsersWithListInput_shouldReturn200() throws Exception {
         doNothing().when(userService).createUsersWithListInput(anyList());
 
         mockMvc.perform(post("/v2/user/createWithList")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(user))))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(user))))
                 .andExpect(status().isOk());
 
         verify(userService).createUsersWithListInput(anyList());
     }
 
-    // ─── DELETE /v2/user/{username} ───────────────────────────────────────────────
+    // ─── DELETE /v2/user/{username}
+    // ───────────────────────────────────────────────
 
     @Test
     void deleteUser_shouldReturn200() throws Exception {
@@ -154,33 +161,36 @@ class UserApiControllerTest {
         verify(userService).deleteUser("john");
     }
 
-    // ─── PUT /v2/user/{username} ──────────────────────────────────────────────────
+    // ─── PUT /v2/user/{username}
+    // ──────────────────────────────────────────────────
 
     @Test
     void updateUser_shouldReturn200() throws Exception {
         doNothing().when(userService).updateUser(eq("john"), any(User.class));
 
         mockMvc.perform(put("/v2/user/john")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk());
 
         verify(userService).updateUser(eq("john"), any(User.class));
     }
 
-    // ─── GET /v2/user/login ───────────────────────────────────────────────────────
+    // ─── GET /v2/user/login
+    // ───────────────────────────────────────────────────────
 
     @Test
     void loginUser_shouldReturn501NotImplemented() throws Exception {
         // login is not yet implemented — controller always returns NOT_IMPLEMENTED
         mockMvc.perform(get("/v2/user/login")
-                        .param("username", "john")
-                        .param("password", "secret")
-                        .accept(MediaType.APPLICATION_JSON))
+                .param("username", "john")
+                .param("password", "secret")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotImplemented());
     }
 
-    // ─── GET /v2/user/logout ──────────────────────────────────────────────────────
+    // ─── GET /v2/user/logout
+    // ──────────────────────────────────────────────────────
 
     @Test
     void logoutUser_shouldReturn501NotImplemented() throws Exception {
@@ -188,4 +198,3 @@ class UserApiControllerTest {
                 .andExpect(status().isNotImplemented());
     }
 }
-

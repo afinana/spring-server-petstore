@@ -1,6 +1,5 @@
 package net.petstore.model;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -16,9 +15,9 @@ import java.util.List;
  */
 @Validated
 @Data
-public class Pet   {
+public class Pet {
 
-  public Pet(){
+  public Pet() {
     super();
   }
 
@@ -31,13 +30,12 @@ public class Pet   {
   @JsonProperty("category")
   private Category category = null;
 
-
-  @Schema(description = "Name of the pet", example = "doggie", required = true)
+  @Schema(description = "Name of the pet", example = "doggie", requiredMode = Schema.RequiredMode.REQUIRED)
   @NotNull
   @JsonProperty("name")
   private String name = null;
 
-  @Schema(description = "Photo URLs", required = true)
+  @Schema(description = "Photo URLs", requiredMode = Schema.RequiredMode.REQUIRED)
   @NotNull
   @JsonProperty("photoUrls")
   @Valid
@@ -48,10 +46,8 @@ public class Pet   {
   @Valid
   private List<Tag> tags = null;
 
-
   @Schema(description = "pet status in the store")
   @JsonProperty("status")
   private PetStatusEnum status = null;
-
 
 }

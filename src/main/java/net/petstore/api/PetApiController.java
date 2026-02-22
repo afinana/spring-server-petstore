@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetApiController implements PetApi {
 
-    private final HttpServletRequest request;
     private final PetService petService;
 
     @RequestMapping(value = "/pet", produces = { "application/json", "application/xml" }, consumes = {

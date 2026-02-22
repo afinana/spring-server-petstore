@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
