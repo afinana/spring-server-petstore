@@ -29,7 +29,7 @@ class PetServiceTest {
     @InjectMocks
     private PetServiceImpl petService;
 
-    // domain entity (stored in MongoDB)
+    // domain entity (stored in Redis)
     private net.petstore.domain.Pet domainPet;
 
     // model DTO (returned by the API)
@@ -100,7 +100,7 @@ class PetServiceTest {
 
     @Test
     void findPetsByStatus_shouldReturnMatchingPets() {
-        when(petRepository.findPetByStatus(PetStatusEnum.AVAILABLE)).thenReturn(List.of(domainPet));
+        when(petRepository.findByStatus(PetStatusEnum.AVAILABLE)).thenReturn(List.of(domainPet));
         when(petMapper.toDto(domainPet)).thenReturn(modelPet);
 
         List<Pet> result = petService.findPetsByStatus(List.of("available"));
@@ -111,8 +111,9 @@ class PetServiceTest {
 
     @Test
     void findPetsByStatus_withUnknownStatus_shouldReturnEmpty() {
-        // PetStatusEnum.fromValue("unknown") returns null; repo returns empty list for null status
-        when(petRepository.findPetByStatus(null)).thenReturn(List.of());
+        // PetStatusEnum.fromValue("unknown") returns null; repo returns empty list for
+        // null status
+        when(petRepository.findByStatus(null)).thenReturn(List.of());
 
         List<Pet> result = petService.findPetsByStatus(List.of("unknown"));
 
@@ -121,7 +122,10 @@ class PetServiceTest {
 
     @Test
     void findPetsByTags_shouldReturnMatchingPets() {
-        when(petRepository.findWithTags("cute")).thenReturn(List.of(domainPet));
+        net.petstore.domain.Tag cuteTag = new net.petstore.domain.Tag();
+        cuteTag.setName("cute");
+        domainPet.setTags(List.of(cuteTag));
+        when(petRepository.findAll()).thenReturn(List.of(domainPet));
         when(petMapper.toDto(domainPet)).thenReturn(modelPet);
 
         List<Pet> result = petService.findPetsByTags(List.of("cute"));

@@ -19,7 +19,7 @@ env:
   USER_ACCOUNT: ${{ secrets.DOCKERHUB_USERNAME }}
   USER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   IMAGE_NAME: spring-server-petstore
-  TAG_NAME: mongo
+  TAG_NAME: redis
 
 
 

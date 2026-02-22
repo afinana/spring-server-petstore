@@ -13,11 +13,9 @@ spring:
       enabled: true
 
   data:
-    mongodb:
-      authentication-database: admin
-      database: petstore
-      # Local Mongo with defaults; override with DATABASE_URI env var
-      uri: ${DATABASE_URI:mongodb://root:example@localhost:27017/?authSource=admin}
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   jackson:
     date-format: net.petstore.RFC3339DateFormat

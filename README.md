@@ -1,6 +1,6 @@
 # 🐾 Spring Petstore API
 
-A production-ready REST API for the classic **Petstore** sample application, built with **Spring Boot 3** and **MongoDB**.  
+A production-ready REST API for the classic **Petstore** sample application, built with **Spring Boot 3** and **Redis**.  
 It exposes the standard `/v2/pet`, `/v2/store`, and `/v2/user` endpoints, is fully documented via OpenAPI 3 (Swagger UI), and ships as a multi-arch Docker image via GitHub Actions.
 
 ---
@@ -29,7 +29,7 @@ It exposes the standard `/v2/pet`, `/v2/store`, and `/v2/user` endpoints, is ful
 |------------------|-------------------------------------|
 | Language         | Java 21 (Virtual Threads enabled)   |
 | Framework        | Spring Boot 3.3                     |
-| Database         | MongoDB (Spring Data MongoDB)       |
+| Database         | Redis (Spring Data Redis)           |
 | API Docs         | SpringDoc OpenAPI 3 / Swagger UI    |
 | Security         | Spring Security + JWT (Auth0 java-jwt) |
 | Caching          | Caffeine (in-memory, 10 min TTL)    |
@@ -47,7 +47,7 @@ It exposes the standard `/v2/pet`, `/v2/store`, and `/v2/user` endpoints, is ful
 |-------------|-----------------|
 | Java (JDK)  | 21              |
 | Maven       | 3.9             |
-| MongoDB     | 6+              |
+| Redis       | 6+              |
 | Docker      | 24+ *(optional)*|
 
 ---
@@ -63,13 +63,10 @@ It exposes the standard `/v2/pet`, `/v2/store`, and `/v2/user` endpoints, is ful
    cd spring-server-petstore
    ```
 
-2. **Start MongoDB** (Docker is the quickest way):
+2. **Start Redis** (Docker is the quickest way):
 
    ```bash
-   docker run -d --name mongo \
-     -e MONGO_INITDB_ROOT_USERNAME=root \
-     -e MONGO_INITDB_ROOT_PASSWORD=example \
-     -p 27017:27017 mongo:6
+   docker run -d --name redis -p 6379:6379 redis:latest
    ```
 
 3. **Build and run**
@@ -78,7 +75,7 @@ It exposes the standard `/v2/pet`, `/v2/store`, and `/v2/user` endpoints, is ful
    mvn spring-boot:run
    ```
 
-   The server starts on **http://127.0.0.1:8080** by default.
+   The server starts on **<http://127.0.0.1:8080>** by default.
 
 ---
 
@@ -89,21 +86,19 @@ Create a `docker-compose.yml` alongside this project (or use the one in the repo
 ```yaml
 services:
   api:
-    image: <dockerhub-user>/spring-mongo-server-petstore:mongo
+    image: <dockerhub-user>/spring-redis-server-petstore:redis
     ports:
       - "8080:8080"
     environment:
-      DATABASE_URI: mongodb://root:example@mongo:27017/?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
-      - mongo
+      - redis
 
-  mongo:
-    image: mongo:6
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+  redis:
+    image: redis:latest
     ports:
-      - "27017:27017"
+      - "6379:6379"
 ```
 
 ```bash
@@ -118,9 +113,9 @@ docker compose up -d
 # Build
 docker build -t spring-server-petstore .
 
-# Run (point to an existing MongoDB instance)
+# Run (point to an existing Redis instance)
 docker run -p 8080:8080 \
-  -e DATABASE_URI="mongodb://root:example@host.docker.internal:27017/?authSource=admin" \
+  -e REDIS_HOST="host.docker.internal" -e REDIS_PORT="6379" \
   spring-server-petstore
 ```
 
@@ -134,7 +129,8 @@ All settings can be overridden with **environment variables** (or JVM `-D` flags
 |----------------------|------------------------------------------------------------|----------------------------------|
 | `SERVER_ADDR`        | `127.0.0.1`                                               | Server bind address              |
 | `SERVER_PORT`        | `8080`                                                     | Server HTTP port                 |
-| `DATABASE_URI`       | `mongodb://root:example@localhost:27017/?authSource=admin` | MongoDB connection URI           |
+| `REDIS_HOST`         | `localhost`                                                | Redis connection host            |
+| `REDIS_PORT`         | `6379`                                                     | Redis connection port            |
 
 Additional settings (cache TTL, actuator exposure, etc.) live in `src/main/resources/application.yaml`.
 
@@ -194,8 +190,8 @@ Additional settings (cache TTL, actuator exposure, etc.) live in `src/main/resou
 
 Once the server is running, open:
 
-- **Swagger UI** → http://localhost:8080/swagger-ui.html
-- **OpenAPI JSON** → http://localhost:8080/v3/api-docs
+- **Swagger UI** → <http://localhost:8080/swagger-ui.html>
+- **OpenAPI JSON** → <http://localhost:8080/v3/api-docs>
 
 ---
 
@@ -262,10 +258,10 @@ src/
 │   ├── java/net/petstore/
 │   │   ├── api/              # REST controllers (Pet, Store, User)
 │   │   ├── configuration/    # Jackson, OpenAPI, HomeController
-│   │   ├── domain/           # MongoDB document entities
+│   │   ├── domain/           # Redis hash entities
 │   │   ├── mapper/           # MapStruct mappers (domain ↔ model)
 │   │   ├── model/            # API model DTOs
-│   │   ├── repository/       # Spring Data MongoDB repositories
+│   │   ├── repository/       # Spring Data Redis repositories
 │   │   ├── security/         # JWT filter, Spring Security config
 │   │   └── service/          # Business logic (PetService, UserService)
 │   └── resources/

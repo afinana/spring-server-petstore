@@ -1,6 +1,5 @@
 package net.petstore.service;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.petstore.mapper.PetMapper;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
-
     private final PetRepository petRepository;
     private final PetMapper petMapper;
 
@@ -36,8 +34,10 @@ public class PetServiceImpl implements PetService {
     }
 
     public List<Pet> findPetsByTags(List<String> tags) {
-        return tags.stream()
-                .flatMap(tag -> petRepository.findWithTags(tag).stream())
+        Iterable<net.petstore.domain.Pet> allPets = petRepository.findAll();
+        return java.util.stream.StreamSupport.stream(allPets.spliterator(), false)
+                .filter(pet -> pet.getTags() != null
+                        && pet.getTags().stream().anyMatch(t -> tags.contains(t.getName())))
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -45,8 +45,9 @@ public class PetServiceImpl implements PetService {
     public List<Pet> findPetsByStatus(List<String> statusList) {
         return statusList.stream()
                 .flatMap(statusCode -> {
-                    net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum.fromValue(statusCode);
-                    return petRepository.findPetByStatus(statusEnum).stream();
+                    net.petstore.domain.PetStatusEnum statusEnum = net.petstore.domain.PetStatusEnum
+                            .fromValue(statusCode);
+                    return petRepository.findByStatus(statusEnum).stream();
                 })
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
@@ -73,7 +74,7 @@ public class PetServiceImpl implements PetService {
     }
 
     public List<Pet> getAllPets() {
-        return petRepository.findAll().stream()
+        return java.util.stream.StreamSupport.stream(petRepository.findAll().spliterator(), false)
                 .map(petMapper::toDto)
                 .collect(java.util.stream.Collectors.toList());
     }

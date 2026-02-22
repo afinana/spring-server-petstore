@@ -1,13 +1,10 @@
 package net.petstore.repository;
 
 import net.petstore.domain.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.CrudRepository;
 
-
-public  interface UserRepository extends MongoRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
     User findByEmail(String email);
-
-
 }

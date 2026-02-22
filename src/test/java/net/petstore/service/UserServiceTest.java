@@ -27,7 +27,7 @@ class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    // domain entity (stored in MongoDB)
+    // domain entity (stored in Redis)
     private net.petstore.domain.User domainUser;
 
     // model DTO (returned by the API)
@@ -181,4 +181,3 @@ class UserServiceTest {
         verify(userRepository, times(1)).save(domainUser);
     }
 }
-
