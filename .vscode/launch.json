@@ -21,7 +21,8 @@
             "name": "Swagger2SpringBoot",
             "request": "launch",
             "mainClass": "net.petstore.Swagger2SpringBoot",
-            "projectName": "spring-swagger-petstore"
+            "projectName": "spring-swagger-petstore",
+            "args": "-Dspring.profiles.active=local"
         }
     ]
 }
